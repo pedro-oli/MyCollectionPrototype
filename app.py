@@ -51,10 +51,9 @@ class App(Tk):
         self.grid_rowconfigure(1, weight=1)
         self.protocol('WM_DELETE_WINDOW', self.closeApp)
 
-        # starts on first page and no filters
+        # starts on first page and no filter
         self.currentPage = 0
         self.manaFilter = False
-        self.classFilter = False
 
         # cards rendered arrays:
         self.cardsLabels = []
@@ -88,35 +87,35 @@ class App(Tk):
 
         # first row of 4 cards
         self.shownCards_frames = []
-        self.shownCards_frames.append(Frame(self.main_frame, bg='blue', width=113, height=168))
+        self.shownCards_frames.append(Frame(self.main_frame, bg='#fee5a3', width=113, height=168))
         self.shownCards_frames[0].grid(row=0, column=0, padx=(22, 0), pady=(55, 0))
-        self.shownCards_frames.append(Frame(self.main_frame, bg='blue', width=113, height=168))
+        self.shownCards_frames.append(Frame(self.main_frame, bg='#fee5a3', width=113, height=168))
         self.shownCards_frames[1].grid(row=0, column=1, padx=(15, 0), pady=(55, 0))
-        self.shownCards_frames.append(Frame(self.main_frame, bg='blue', width=113, height=168))
+        self.shownCards_frames.append(Frame(self.main_frame, bg='#fee5a3', width=113, height=168))
         self.shownCards_frames[2].grid(row=0, column=2, padx=(15, 0), pady=(55, 0))
-        self.shownCards_frames.append(Frame(self.main_frame, bg='blue', width=113, height=168))
+        self.shownCards_frames.append(Frame(self.main_frame, bg='#fee5a3', width=113, height=168))
         self.shownCards_frames[3].grid(row=0, column=3, padx=(15, 0), pady=(55, 0))
 
         # second row of 4 cards
-        self.shownCards_frames.append(Frame(self.main_frame, bg='blue', width=113, height=168))
+        self.shownCards_frames.append(Frame(self.main_frame, bg='#fee5a3', width=113, height=168))
         self.shownCards_frames[4].grid(row=2, column=0, padx=(22, 0), pady=(35, 0))
-        self.shownCards_frames.append(Frame(self.main_frame, bg='blue', width=113, height=168))
+        self.shownCards_frames.append(Frame(self.main_frame, bg='#fee5a3', width=113, height=168))
         self.shownCards_frames[5].grid(row=2, column=1, padx=(15, 0), pady=(35, 0))
-        self.shownCards_frames.append(Frame(self.main_frame, bg='blue', width=113, height=168))
+        self.shownCards_frames.append(Frame(self.main_frame, bg='#fee5a3', width=113, height=168))
         self.shownCards_frames[6].grid(row=2, column=2, padx=(15, 0), pady=(35, 0))
-        self.shownCards_frames.append(Frame(self.main_frame, bg='blue', width=113, height=168))
+        self.shownCards_frames.append(Frame(self.main_frame, bg='#fee5a3', width=113, height=168))
         self.shownCards_frames[7].grid(row=2, column=3, padx=(15, 0), pady=(35, 0))
 
     def previousPage(self, event):
         if (self.currentPage != 0):
             self.currentPage -= 1
-            self.currentPage_label.configure(text= 'Page {}'.format(self.currentPage))
+            self.currentPage_label.configure(text= 'Page {}'.format(self.currentPage + 1))
             self.renderPage()
 
     def nextPage(self, event):
         if (self.currentPage + 1 < self.collection.getSize() / 8):
             self.currentPage += 1
-            self.currentPage_label.configure(text= 'Page {}'.format(self.currentPage))
+            self.currentPage_label.configure(text= 'Page {}'.format(self.currentPage + 1))
             self.renderPage()
 
     def closeApp(self):
@@ -143,8 +142,6 @@ class App(Tk):
                 cardId = card['cardId']
                 mana = card['cost']
                 name = card['name']
-                if (name == 'Sheep'):
-                    print(card)
                 self.collection.insertCard(Card(cardId, imgUrl, mana, name))
             except:
                 continue
@@ -166,7 +163,7 @@ class App(Tk):
                 test1 = self.tk_images[imagesDownloaded]
                 imagesDownloaded += 1
                 i += 1
-                print('    Downloading image of', card)
+                # print('    Downloading image of', card)
             except:
                 # deleting problematic cards from collection
                 self.collection.removeCard(card.cardId)
@@ -178,12 +175,13 @@ class App(Tk):
         self.cardsLabels = []
 
         # empty all 8 frames
-        for frame in self.shownCards_frames:
-            self.cardsLabels.append(
-                Label(frame, bg='#fee5a3')
-            )
-            self.cardsLabels[-1].place(x=0, y=0)
+        while i < 8:
+            frame = self.shownCards_frames[i]
+            for widget in frame.winfo_children():
+                widget.destroy()
+            i += 1
 
+        i = 0
         for card in self.collection.getCards():
             if (i < firstCardIndex):
                 i += 1
@@ -193,7 +191,7 @@ class App(Tk):
             self.cardsLabels.append(
                 Label(self.shownCards_frames[cardsRendered], image=self.tk_images[i], bg='#fee5a3')
             )
-            self.cardsLabels[-1].place(x=0, y=0)
+            self.cardsLabels[cardsRendered].place(x=0, y=0)
             i += 1
             cardsRendered += 1
 
